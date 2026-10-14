@@ -1,63 +1,96 @@
 # Yüz Bulanıklaştırma Uygulaması
 
-Bu uygulama, bilgisayar kamerasından alınan görüntüdeki yüzleri otomatik olarak tespit eder ve bulanıklaştırır. Gizlilik ve sansür amaçlı kullanılabilir.
+Python ve OpenCV ile webcam görüntüsündeki yüzleri tespit edip gerçek zamanlı bulanıklaştıran masaüstü uygulaması. Yüz tespiti için projedeki Haar Cascade XML modeli kullanılır.
 
-## Kullanılan Teknolojiler
+## Nasıl çalışır?
 
-- Python
-- OpenCV
-- Haar Cascade Sınıflandırıcı
+1. Varsayılan kamera (`0`) açılır.
+2. Tespit için görüntü yarı boyuta küçültülür ve griye dönüştürülür.
+3. Haar Cascade yüz bölgelerini bulur.
+4. Bulunan bölgeler asıl görüntüde Gaussian blur ile bulanıklaştırılır.
+5. Sonuç OpenCV penceresinde gösterilir; **`q`** ile uygulama kapanır.
 
-## Proje Yapısı
+Kaynak kodda görüntüyü dosyaya kaydetme veya ağ üzerinden gönderme işlemi yoktur. Yüz tespiti her karede başarılı olmayabilir; bu uygulama tam anonimleştirme garantisi vermez.
 
-```
-face-blur-app
-├── src
-│   ├── main.py                # Uygulamanın başlangıç dosyası
-│   ├── face_blur.py           # Yüz tespiti ve bulanıklaştırma fonksiyonları
-│   ├── haar_cascade
-│   │   └── haarcascade_frontalface_default.xml  # Hazır Haar Cascade modeli
-│   └── utils.py               # Çerçeve işleme yardımcı fonksiyonları
-├── requirements.txt           # Proje bağımlılıkları
-└── README.md                  # Proje dokümantasyonu
-```
+## Gereksinimler
+
+- Python; yerel çalışma için Python 3.10 önerilir.
+- OpenCV grafik penceresini gösterebilen masaüstü oturumu.
+- Çalışan webcam ve kamera erişim izni.
+
+Kaynak kod OpenCV destekli masaüstü sistemlerde çalıştırılabilir. Windows dışındaki kamera ve pencere davranışları ayrıca doğrulanmalıdır. Paket sürümleri sabitlenmediği için tüm Python sürümleriyle uyum garantisi verilmez.
 
 ## Kurulum
 
-Bu uygulamayı çalıştırmak için bilgisayarınızda Python kurulu olmalıdır. Gerekli bağımlılıkları pip ile yükleyebilirsiniz.
-
-
- Gerekli paketleri yükleyin:
-   ```
-   pip install -r requirements.txt
-   ```
-
-## Kullanım
-
-Uygulamayı çalıştırmak için aşağıdaki komutu kullanın:
-
-```
-python src/main.py
+```bash
+git clone https://github.com/symNistaken/face-blur-app.git
+cd face-blur-app
+python -m venv .venv
 ```
 
-Kameranızın bağlı ve erişilebilir olduğundan emin olun. Uygulama, kameradan gelen görüntüyü bir pencerede açacak ve tespit edilen yüzleri gerçek zamanlı olarak bulanıklaştıracaktır.
+Windows PowerShell:
 
-## Sistem Gereksinimleri
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe src/main.py
+```
 
-- Windows 10/11
-- Bağlı ve çalışan bir webcam
-- Python 3.8+ (sadece kaynak koddan çalıştırmak için)
+Linux/macOS:
 
-## Sık Karşılaşılan Sorunlar
+```bash
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python src/main.py
+```
 
-- **Cascade dosyası bulunamadı:** Dosyanın doğru yerde ve sağlam olduğundan emin olun.
-- **Webcam açılamıyor:** Kameranın başka bir program tarafından kullanılmadığından emin olun.
+Sanal ortam etkinleştirildiyse aynı işlem `python src/main.py` ile yapılabilir. Pencereye odaklanıp **`q`** tuşuna basarak çık.
 
-> Not: Oluşturulan .exe dosyası sadece Windows işletim sistemlerinde çalışır.
-> Uyarı: PyInstaller ile oluşturulan .exe dosyaları bazı antivirüs programları tarafından yanlışlıkla zararlı olarak algılanabilir. Dosyanın güvenli olduğundan emin olabilirsiniz.
+## Proje yapısı
 
-## Geliştirici
+```text
+src/
+├── main.py                  # Kamera, cascade yükleme ve pencere döngüsü
+├── face_blur.py             # Yüz tespiti ve Gaussian blur
+├── utils.py                 # Boyutlandırma ve gri görüntü yardımcıları
+└── haar_cascade/
+    └── haarcascade_frontalface_default.xml
+requirements.txt            # OpenCV ve NumPy
+main.spec                   # Windows PyInstaller paketleme tanımı
+```
 
-- [Berkay Seyman](https://github.com/symNistaken)
+## Windows executable oluşturma
 
+PyInstaller çalışma bağımlılığı değildir; paketleme için ayrıca kur:
 
+```powershell
+.\.venv\Scripts\python.exe -m pip install pyinstaller
+.\.venv\Scripts\python.exe -m PyInstaller main.spec
+```
+
+Komutları depo kökünde çalıştır. `main.spec`, Haar Cascade XML dosyasını pakete ekler ve `dist/main.exe` oluşturacak şekilde tanımlıdır. Windows executable Windows üzerinde oluşturulmalıdır; kaynak kodun diğer sistemlerde çalışabilmesi Windows executable'ın taşınabilir olduğu anlamına gelmez.
+
+Depoda eski `build/` çıktıları bulunur; bunlar kurulum için gerekli değildir ve güncel executable garantisi vermez. Antivirüs uyarısı bir dosyanın güvenli olduğunu kanıtlamaz; uyarıyı incele, mümkünse kaynaktan kendi paketini oluştur.
+
+## Sorun giderme
+
+| Sorun | Kontrol |
+| --- | --- |
+| Webcam açılamıyor | Kamera iznini, bağlantıyı ve kamerayı kullanan diğer programları kontrol et. |
+| Yanlış kamera açılıyor | `src/main.py` içindeki `cv2.VideoCapture(0)` kamera indeksini değiştir. |
+| Cascade yüklenemiyor | XML dosyasının `src/haar_cascade/` altında olduğunu kontrol et; paketlemede `main.spec` kullan. |
+| Pencere açılamıyor | Grafik oturumu ve `opencv-python` kurulumunu kontrol et; headless paket pencere açmaz. |
+| Bazı yüzler bulanıklaşmıyor | Işık, yüz açısı ve görüntü kalitesi tespiti etkiler. Çıktıyı paylaşmadan önce incele. |
+| Modül bulunamadı | Paketleri uygulamayı çalıştırdığın aynı Python/sanal ortamla kur. |
+
+## Kontrol ve sınırlar
+
+```bash
+python -m compileall -q src
+```
+
+Sözdizimi kontrolü kamera erişimini veya tespit kalitesini doğrulamaz. Canlı deneme için `src/main.py` çalıştır ve yüzün farklı açı/ışık koşullarında nasıl göründüğünü kontrol et. Kamera görüntüsündeki her yüzün her zaman gizleneceği varsayılmamalıdır.
+
+## Geliştirici ve kullanım koşulları
+
+[Berkay Seyman](https://github.com/symNistaken).
+
+Depoda ayrı bir açık kaynak `LICENSE` dosyası bulunmaz; public erişim genel kullanım lisansı anlamına gelmez. Kullanım ve dağıtım izni için proje sahibiyle iletişime geç. OpenCV, Haar Cascade modeli ve diğer bağımlılıkların kendi lisansları ayrıca geçerlidir.
