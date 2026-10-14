@@ -1,8 +1,23 @@
 # Yüz Bulanıklaştırma Uygulaması
 
+![FACE BLUR — proje tanıtım görseli](docs/assets/banner.svg)
+
+[![Python checks](https://github.com/symNistaken/face-blur-app/actions/workflows/checks.yml/badge.svg)](https://github.com/symNistaken/face-blur-app/actions/workflows/checks.yml)
+[![Python](https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white)](https://www.python.org/downloads/)
+![OpenCV](https://img.shields.io/badge/OpenCV-OpenCV-242938?logo=opencv&logoColor=white)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
 Python ve OpenCV ile webcam görüntüsündeki yüzleri tespit edip gerçek zamanlı bulanıklaştıran masaüstü uygulaması. Yüz tespiti için projedeki Haar Cascade XML modeli kullanılır.
 
 ## Nasıl çalışır?
+
+```mermaid
+flowchart LR
+    A[Webcam] --> B[Yarı boyut ve gri görüntü]
+    B --> C[Haar Cascade yüz tespiti]
+    C --> D[Yüz bölgelerine Gaussian blur]
+    D --> E[Canlı önizleme]
+```
 
 1. Varsayılan kamera (`0`) açılır.
 2. Tespit için görüntü yarı boyuta küçültülür ve griye dönüştürülür.
@@ -93,4 +108,10 @@ Sözdizimi kontrolü kamera erişimini veya tespit kalitesini doğrulamaz. Canl�
 
 [Berkay Seyman](https://github.com/symNistaken).
 
-Depoda ayrı bir açık kaynak `LICENSE` dosyası bulunmaz; public erişim genel kullanım lisansı anlamına gelmez. Kullanım ve dağıtım izni için proje sahibiyle iletişime geç. OpenCV, Haar Cascade modeli ve diğer bağımlılıkların kendi lisansları ayrıca geçerlidir.
+**[MIT Lisansı](LICENSE)** ile yayımlanır. Ticari kullanım, değiştirme ve dağıtım serbesttir; telif bildirimi ve lisans metni korunmalıdır. Yazılım garanti olmadan sunulur.
+
+Copyright (c) 2026 Berkay Seyman. OpenCV, Haar Cascade modeli ve diğer bağımlılıkların kendi lisansları ayrıca geçerlidir.
+
+## Otomatik kontroller
+
+[GitHub Actions](https://github.com/symNistaken/face-blur-app/actions) her push ve pull request için Python sözdizimini kontrol eder. Rozet kamera erişimini, model eğitimini veya uçtan uca uygulama davranışını doğrulamaz.
