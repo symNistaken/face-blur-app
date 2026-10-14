@@ -33,7 +33,7 @@ Kaynak kodda görüntüyü dosyaya kaydetme veya ağ üzerinden gönderme işlem
 - OpenCV grafik penceresini gösterebilen masaüstü oturumu.
 - Çalışan webcam ve kamera erişim izni.
 
-Kaynak kod OpenCV destekli masaüstü sistemlerde çalıştırılabilir. Windows dışındaki kamera ve pencere davranışları ayrıca doğrulanmalıdır. Paket sürümleri sabitlenmediği için tüm Python sürümleriyle uyum garantisi verilmez.
+Kaynak kod OpenCV destekli masaüstü sistemlerde çalıştırılabilir. Windows dışındaki kamera ve pencere davranışları ayrıca doğrulanmalıdır. OpenCV ve NumPy sürümleri Python 3.10 için sabitlenmiştir; tüm sistem/kamera sürücülerinde uyum garantisi verilmez.
 
 ## Kurulum
 
@@ -90,7 +90,7 @@ Depoda eski `build/` çıktıları bulunur; bunlar kurulum için gerekli değild
 | Sorun | Kontrol |
 | --- | --- |
 | Webcam açılamıyor | Kamera iznini, bağlantıyı ve kamerayı kullanan diğer programları kontrol et. |
-| Yanlış kamera açılıyor | `src/main.py` içindeki `cv2.VideoCapture(0)` kamera indeksini değiştir. |
+| Yanlış kamera açılıyor | `python src/main.py --camera 1` gibi bir komutla kamera indeksini seç. |
 | Cascade yüklenemiyor | XML dosyasının `src/haar_cascade/` altında olduğunu kontrol et; paketlemede `main.spec` kullan. |
 | Pencere açılamıyor | Grafik oturumu ve `opencv-python` kurulumunu kontrol et; headless paket pencere açmaz. |
 | Bazı yüzler bulanıklaşmıyor | Işık, yüz açısı ve görüntü kalitesi tespiti etkiler. Çıktıyı paylaşmadan önce incele. |
@@ -100,9 +100,10 @@ Depoda eski `build/` çıktıları bulunur; bunlar kurulum için gerekli değild
 
 ```bash
 python -m compileall -q src
+python -m unittest discover -s tests -v
 ```
 
-Sözdizimi kontrolü kamera erişimini veya tespit kalitesini doğrulamaz. Canlı deneme için `src/main.py` çalıştır ve yüzün farklı açı/ışık koşullarında nasıl göründüğünü kontrol et. Kamera görüntüsündeki her yüzün her zaman gizleneceği varsayılmamalıdır.
+Sözdizimi kontrolü kamera erişimini veya tespit kalitesini doğrulamaz. Kamerasız 9 test; açılmayan kamera, eksik cascade, okuma/pencere hatası, `q` ile kapanma, kaynak temizliği ve bulanıklaştırma bölgesini denetler. Gerçek cihaz açılmaz. Canlı deneme için `src/main.py` çalıştır ve yüzün farklı açı/ışık koşullarında nasıl göründüğünü kontrol et. Kamera görüntüsündeki her yüzün her zaman gizleneceği varsayılmamalıdır.
 
 ## Geliştirici ve kullanım koşulları
 
@@ -114,4 +115,4 @@ Copyright (c) 2026 Berkay Seyman. OpenCV, Haar Cascade modeli ve diğer bağıml
 
 ## Otomatik kontroller
 
-[GitHub Actions](https://github.com/symNistaken/face-blur-app/actions) her push ve pull request için Python sözdizimini kontrol eder. Rozet kamera erişimini, model eğitimini veya uçtan uca uygulama davranışını doğrulamaz.
+[GitHub Actions](https://github.com/symNistaken/face-blur-app/actions) her push ve pull request için Python sözdizimini ve kamerasız davranış testlerini çalıştırır. Gerçek kamera erişimi ve yüz tespiti başarısı bu testlerle garanti edilmez.
